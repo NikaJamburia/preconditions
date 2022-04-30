@@ -27,24 +27,6 @@ class PlainStatement(
         )
     }
 
-    private fun partToParameter(part: String): Any? {
-        return if (part.contains("'")) {
-            part.removeAll("'")
-        } else if (part.isNumber()) {
-            part.toDouble()
-        } else if (part.isTemplate()) {
-            val templateParamName = part
-                .removeAll("{")
-                .removeAll("}")
-            templateParameters[templateParamName] ?: error("{parameter $templateParamName not found")
-        } else if (part == "null") {
-            null
-        }
-        else {
-            error("Unknown type of parameter $part")
-        }
-    }
-
 }
 
 class PlainStatementFragment(
@@ -52,7 +34,7 @@ class PlainStatementFragment(
     private val templateParameters: Map<String, Any> = mapOf()
 ) {
     fun value(): Any? {
-        return if (stringValue.contains("'")) {
+        return if (stringValue.startsWith("'") && stringValue.endsWith("'")) {
             stringValue.removeAll("'")
         } else if (stringValue.isNumber()) {
             stringValue.toDouble()

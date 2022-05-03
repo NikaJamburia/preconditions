@@ -1,5 +1,7 @@
 package ge.nika.preconditions.statement
 
+import ge.nika.preconditions.template.toTemplateContext
+import io.kotest.matchers.shouldBe
 import org.junit.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
@@ -19,14 +21,31 @@ class PlainStatementTest {
     }
 
     @Test
-    fun `should correctly describe parametrized precondition`() {
+    fun `should correctly describe parametrized precondition with a direct parameter`() {
         val text = "{customNumber} !IS 1"
-        val description = PlainStatement(text, mapOf("customNumber" to 10)).describePrecondition()
+        val description = PlainStatement(text, mapOf("customNumber" to 10).toTemplateContext()).describePrecondition()
 
         assertEquals(description.parameters.first(), 10)
         assertEquals(description.parameters.last(), 1.0)
         assertEquals(description.preconditionName, "!IS")
 
+    }
+
+    @Test
+    fun `should be able to insert given objects field into template value`() {
+        val text = "{user1.name} !IS {user2.name}"
+        val params = mapOf(
+            "user1" to object {
+                val name = "nika"
+            },
+            "user2" to object {
+                val name = "bika"
+            }
+        ).toTemplateContext()
+        val description = PlainStatement(text, params).describePrecondition()
+        description.parameters[0] shouldBe "nika"
+        description.parameters[1] shouldBe "bika"
+        description.preconditionName shouldBe "!IS"
     }
 
     @Test

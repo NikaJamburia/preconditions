@@ -2,6 +2,7 @@ package ge.nika.preconditions.service
 
 import ge.nika.preconditions.precondition.Negated
 import ge.nika.preconditions.precondition.Precondition
+import ge.nika.preconditions.template.toTemplateContext
 import ge.nika.preconditions.translate.PreconditionTranslator
 import io.kotest.assertions.asClue
 import io.kotest.matchers.shouldBe
@@ -63,12 +64,19 @@ class StatementTranslationServiceTest {
 
     @Test
     fun `should insert template parameters into precondition`() {
-        val statement = "{custom} IS 'b'"
+        val statement = "{custom} IS {user.firstName}"
+        val templateContext = mapOf(
+            "custom" to "nika",
+            "user" to object {
+                val firstName = "nika"
+                val lastName = "jamburia"
+            }
+        ).toTemplateContext()
 
-        val precondition = service.translate(statement, mapOf("custom" to "nika"))
+        val precondition = service.translate(statement, templateContext)
         (precondition as TestIs).asClue {
             it.first shouldBe "nika"
-            it.second shouldBe "b"
+            it.second shouldBe "nika"
         }
     }
 
@@ -111,6 +119,59 @@ class StatementTranslationServiceTest {
             }
         }
 
+    }
+
+    @Test
+    fun `should be able to translate big preconditions`() {
+        val statement = """
+            ((
+                1 IS 1
+                OR
+                2 !IS 2
+            ) OR (
+                5 > 6
+                OR
+                'nika' IS 'bika'
+            )) OR (
+                1 IS 1
+            )
+        """.trimIndent()
+
+        val precondition = service.translate(statement)
+
+        (precondition as TestOr).asClue { root ->
+
+            (root.first as TestOr).asClue { firstPrecondition ->
+                (firstPrecondition.first as TestOr).asClue { firstMixed ->
+                    (firstMixed.first as TestIs).asClue { firstPlain ->
+                        firstPlain.first shouldBe 1.0
+                        firstPlain.second shouldBe 1.0
+                    }
+                    firstMixed.second.asClue { secondPlain ->
+                        (secondPlain is Negated) shouldBe true
+                        secondPlain.asBoolean() shouldBe false
+                    }
+                }
+
+                (firstPrecondition.second as TestOr).asClue { secondMixed ->
+                    (secondMixed.first as TestIsGreaterFloat).asClue { firstPlain ->
+                        firstPlain.first shouldBe 5.0
+                        firstPlain.second shouldBe 6.0
+                    }
+                    (secondMixed.second as TestIs).asClue { secondPlain ->
+                        secondPlain.first shouldBe "nika"
+                        secondPlain.second shouldBe "bika"
+                    }
+                }
+            }
+
+            (root.second as TestIs).asClue { secondPrecondition ->
+                secondPrecondition.first shouldBe 1.0
+                secondPrecondition.second shouldBe 1.0
+            }
+        }
+
+        precondition.asBoolean() shouldBe true
     }
 
 }

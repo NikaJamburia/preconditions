@@ -1,5 +1,6 @@
 package ge.nika.preconditions.statement
 
+import ge.nika.preconditions.template.toTemplateContext
 import io.kotest.assertions.asClue
 import io.kotest.matchers.equality.shouldBeEqualToComparingFields
 import io.kotest.matchers.should
@@ -107,7 +108,7 @@ class MixedStatementTest {
             )
         """.trimIndent()
 
-        val description = MixedStatement(statement, mapOf("custom" to "customValue")).describePrecondition()
+        val description = MixedStatement(statement, mapOf("custom" to "customValue").toTemplateContext()).describePrecondition()
 
         (((description.parameters[0] as PreconditionDescription)
             .parameters[0] as PreconditionDescription)

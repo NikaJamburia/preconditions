@@ -1,5 +1,6 @@
 package ge.nika.preconditions.statement
 
+import ge.nika.preconditions.template.toTemplateContext
 import io.kotest.matchers.shouldBe
 import org.junit.Test
 import kotlin.test.assertEquals
@@ -69,7 +70,7 @@ class ComplexStatementTest {
             'b' !IS 'b'
         """.trimIndent()
 
-        val description = ComplexStatement(statement, mapOf("custom" to "nika")).describePrecondition()
+        val description = ComplexStatement(statement, mapOf("custom" to "nika").toTemplateContext()).describePrecondition()
         assertEquals(description.preconditionName, "AND")
 
         val firstParameter = description.parameters[0]

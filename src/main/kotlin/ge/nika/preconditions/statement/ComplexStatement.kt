@@ -1,9 +1,12 @@
 package ge.nika.preconditions.statement
 
+import ge.nika.preconditions.template.TemplateContext
+import ge.nika.preconditions.template.toTemplateContext
+
 
 class ComplexStatement(
     private val statementText: String,
-    private val templateParameters: Map<String, Any> = mapOf()
+    private val templateContext: TemplateContext = mapOf<String, Any>().toTemplateContext()
 ): Statement {
 
     override fun describePrecondition(): PreconditionDescription {
@@ -12,7 +15,7 @@ class ComplexStatement(
             .map(String::trim)
 
         if (lines.size == 1) {
-            return PlainStatement(statementText, templateParameters).describePrecondition()
+            return PlainStatement(statementText, templateContext).describePrecondition()
         }
 
         check(lines.size == 3) {
@@ -21,8 +24,8 @@ class ComplexStatement(
 
         return PreconditionDescription(
             listOf(
-                PlainStatement(lines[0], templateParameters).describePrecondition(),
-                PlainStatement(lines[2], templateParameters).describePrecondition()
+                PlainStatement(lines[0], templateContext).describePrecondition(),
+                PlainStatement(lines[2], templateContext).describePrecondition()
             ),
             lines[1]
         )

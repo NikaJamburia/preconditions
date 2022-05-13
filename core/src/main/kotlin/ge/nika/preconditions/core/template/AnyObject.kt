@@ -9,7 +9,14 @@ internal class AnyObject(
 ) {
 
     @Suppress("UNCHECKED_CAST")
-    fun valueOf(fieldName: String): Any {
+    fun valueOf(fieldName: String): Any =
+        if (obj is Map<*, *>) {
+            obj[fieldName] ?: error("Field is not initialized")
+        } else {
+            getField(fieldName)
+        }
+
+    private fun getField(fieldName: String): Any {
         val clazz = obj::class.java
         val field = clazz.kotlin.declaredMemberProperties
             .firstOrNull { it.name == fieldName }
@@ -19,7 +26,6 @@ internal class AnyObject(
         check(field.visibility == KVisibility.PUBLIC) { "Field ${field.name} of ${clazz.findSimpleName()} is inaccessible" }
 
         return field.get(obj) ?: error("Field is not initialized")
-
     }
 
     private fun Class<out Any>.findSimpleName(): String =

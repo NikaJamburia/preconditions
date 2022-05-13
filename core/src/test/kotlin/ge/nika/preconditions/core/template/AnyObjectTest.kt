@@ -64,6 +64,26 @@ class AnyObjectTest {
         val exception = shouldThrow<IllegalStateException> { string.valueOf("name") }
         exception.message shouldBe "Field name is not present on String"
     }
+
+    @Test
+    fun `looks up value in map is given a map`() {
+        val map = mapOf(
+            "name" to "nika",
+            "creditCard" to object { val number = 123 },
+            "data" to mapOf("phoneNumber" to "12345") ,
+        )
+        val anyObject = AnyObject(map)
+
+        anyObject.valueOf("name") shouldBe "nika"
+
+        AnyObject(
+            anyObject.valueOf("creditCard")
+        ).valueOf("number") shouldBe 123
+
+        AnyObject(
+            anyObject.valueOf("data")
+        ).valueOf("phoneNumber") shouldBe "12345"
+    }
 }
 
 data class TestObject(

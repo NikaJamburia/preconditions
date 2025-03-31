@@ -1,6 +1,5 @@
 package ge.nika.preconditions.testApp
 
-import ge.nika.preconditions.core.api.service.StatementTranslationService
 import org.http4k.core.Method
 import org.http4k.core.Response
 import org.http4k.core.Status
@@ -11,7 +10,7 @@ import org.http4k.routing.routes
 
 class Server {
 
-    fun getRoutes() = routes(evaluate())
+    fun getRoutes() = routes(evaluate(), ping())
 
     private fun evaluate(): RoutingHttpHandler =
         "evaluate" bind Method.POST to { request ->
@@ -27,6 +26,14 @@ class Server {
                 jsonResponse(Status.BAD_REQUEST, EvaluationResponse(null, listOf(e.message ?: "Unknown error")))
             }
 
+        }
+
+    private fun ping(): RoutingHttpHandler =
+        "ping" bind Method.GET to {
+            jsonResponse(
+                status = Status.OK,
+                body = object { val message: String = "All good" }
+            )
         }
 }
 

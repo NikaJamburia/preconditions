@@ -3,6 +3,7 @@ val kotlin_version: String by project
 plugins {
     base
     kotlin("jvm") version "1.6.20"
+    id("com.gradleup.shadow") version "9.0.0-beta11"
 }
 allprojects {
 

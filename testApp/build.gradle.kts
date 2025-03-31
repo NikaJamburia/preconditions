@@ -1,3 +1,5 @@
+apply(plugin = "com.gradleup.shadow")
+
 dependencies {
     implementation(project(":library"))
 
@@ -7,6 +9,10 @@ dependencies {
     implementation("org.http4k:http4k-client-apache")
     implementation("com.fasterxml.jackson.core:jackson-databind:2.13.2.2")
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.13.2")
+}
 
-
+tasks.withType<Jar> {
+    manifest {
+        attributes["Main-Class"] = "ge.nika.preconditions.testApp.MainKt"
+    }
 }

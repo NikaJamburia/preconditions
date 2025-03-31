@@ -1,4 +1,4 @@
-FROM gradle:8.13.0-jdk17-alpine as builder
+FROM gradle:8.13.0-jdk17-alpine AS builder
 WORKDIR /app
 COPY . /app
 RUN ./gradlew :testApp:shadowJar

@@ -1,0 +1,20 @@
+apiVersion: apps/v1
+kind: ReplicaSet
+metadata:
+  name: testapp-replicaset
+  labels:
+    plane: backend
+spec:
+  selector:
+    matchLabels:
+      role: preconditions-test-app
+  template:
+    metadata:
+      name: preconditions-test-app
+      labels:
+        role: preconditions-test-app
+    spec:
+      containers:
+        - name: preconditions-test-app
+          image: preconditions-test-app
+          imagePullPolicy: IfNotPresent

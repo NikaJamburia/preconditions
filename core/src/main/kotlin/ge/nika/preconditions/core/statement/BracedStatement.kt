@@ -1,17 +1,21 @@
 package ge.nika.preconditions.core.statement
 
+import ge.nika.preconditions.core.api.exceptions.parsingError
+
 internal class BracedStatement(
     private val value: String
 ) {
 
     init {
         check(value.contains("(")) {
-            "Invalid statement: $value"
+            parsingError(
+                message = "Braced statement must contain at least 1 '(' symbol!",
+                startPosition = 0,
+                endPosition = value.lastIndex,
+            )
         }
 
-        check(bracesBalance() == 0) {
-            "Invalid statement: $value"
-        }
+        validateBracesBalance()
     }
 
     fun getFirstLevelSubstrings(): List<String> {
@@ -41,13 +45,26 @@ internal class BracedStatement(
         }
     }
 
-    private fun bracesBalance(): Int {
-        return value.toCharArray().fold(0) { accumulated, char ->
-            when (char) {
+    private fun validateBracesBalance() {
+        val balance = value.toCharArray().foldIndexed(0) { i, accumulated, char ->
+            val newValue = when (char) {
                 '(' -> { accumulated + 1 }
                 ')' -> { accumulated - 1 }
                 else -> { accumulated }
             }
+            if (newValue < 0) {
+                parsingError(
+                    message = "A closing brace does not have a corresponding opening brace!",
+                    startPosition = i,
+                )
+            }
+            newValue
+        }
+        if (balance > 0) {
+            parsingError(
+                message = "An opening brace does not have a corresponding closing brace!",
+                startPosition = value.indexOf("("),
+            )
         }
     }
 }

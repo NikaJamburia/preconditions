@@ -5,6 +5,7 @@ import ge.nika.preconditions.core.api.precondition.PreconditionTranslator
 import ge.nika.preconditions.core.api.service.StatementTranslationService
 import ge.nika.preconditions.core.precondition.Negated
 import ge.nika.preconditions.core.api.template.toTemplateContext
+import ge.nika.preconditions.core.assertParsingError
 import io.kotest.assertions.asClue
 import io.kotest.matchers.shouldBe
 import org.junit.Test
@@ -94,8 +95,8 @@ class StatementTranslationServiceTest {
     fun `should throw exception if precondition text is invalid`() {
         val statement = "'nika' IS 'bika' aaaaa"
 
-        val exception = assertThrows<IllegalStateException> { service.translate(statement) }
-        exception.message shouldBe "Invalid plain statement: <'nika' IS 'bika' aaaaa>"
+        val exception = assertParsingError(17, 21) { service.translate(statement) }
+        exception.message shouldBe "Statement contain must consist of 3 parts separated by spaces!"
     }
 
     @Test

@@ -1,5 +1,6 @@
 package ge.nika.preconditions.core.statement
 
+import ge.nika.preconditions.core.assertParsingError
 import io.kotest.matchers.shouldBe
 import org.junit.Test
 import org.junit.jupiter.api.assertThrows
@@ -33,32 +34,6 @@ class BracedStatementTest {
         substrings[1].trimIndent() shouldBe "ragaca 3"
     }
 
-    @Test
-    fun `should not accept string without braces`() {
-        val string = "aaaaa"
-
-        assertThrows<IllegalStateException>("Invalid statement: $string") {
-            BracedStatement(string)
-        }
-    }
-
-    @Test
-    fun `should not accept string with unclosed braces`() {
-        val string = "aaa(aa(aaa)"
-
-        assertThrows<IllegalStateException>("Invalid statement: $string") {
-            BracedStatement(string)
-        }
-    }
-
-    @Test
-    fun `should not accept string with unopened braces`() {
-        val string = "aaa(aa(aaa))))"
-
-        assertThrows<IllegalStateException>("Invalid statement: $string") {
-            BracedStatement(string)
-        }
-    }
 
     @Test
     fun `should work when there are words before first brace`() {
@@ -69,5 +44,32 @@ class BracedStatementTest {
         substrings.size shouldBe 2
         substrings[0] shouldBe "b"
         substrings[1] shouldBe "(c)"
+    }
+
+    @Test
+    fun `should not accept string without braces`() {
+        val string = "aaaaa"
+
+        assertParsingError(0, 4) {
+            BracedStatement(string)
+        }.message shouldBe "Braced statement must contain at least 1 '(' symbol!"
+    }
+
+    @Test
+    fun `should not accept string with unclosed braces`() {
+        val string = "aaa(aa(aaa)"
+
+        assertParsingError(3, 3) {
+            BracedStatement(string)
+        }.message shouldBe "An opening brace does not have a corresponding closing brace!"
+    }
+
+    @Test
+    fun `should throw error if braces balance goes below 0`() {
+        val string = "(aa))(aaa)"
+
+        assertParsingError(4, 4) {
+            BracedStatement(string)
+        }.message shouldBe "A closing brace does not have a corresponding opening brace!"
     }
 }

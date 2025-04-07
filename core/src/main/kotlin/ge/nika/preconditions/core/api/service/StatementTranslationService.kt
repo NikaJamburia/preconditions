@@ -1,5 +1,6 @@
 package ge.nika.preconditions.core.api.service
 
+import ge.nika.preconditions.core.api.exceptions.UnknownPreconditionException
 import ge.nika.preconditions.core.api.precondition.Precondition
 import ge.nika.preconditions.core.api.precondition.PreconditionDescription
 import ge.nika.preconditions.core.api.precondition.PreconditionTranslator
@@ -7,6 +8,7 @@ import ge.nika.preconditions.core.api.template.TemplateContext
 import ge.nika.preconditions.core.api.template.toTemplateContext
 import ge.nika.preconditions.core.precondition.Negated
 import ge.nika.preconditions.core.statement.MixedStatement
+import ge.nika.preconditions.core.statement.OffsetStatement.Companion.withOffset
 import ge.nika.preconditions.core.utils.removeAll
 
 class StatementTranslationService(
@@ -17,7 +19,7 @@ class StatementTranslationService(
         statement: String,
         templateContext: TemplateContext = mapOf<String, Any>().toTemplateContext()
     ): Precondition {
-        val description = MixedStatement(statement, templateContext).describePrecondition()
+        val description = MixedStatement(statement, templateContext).withOffset(0).describePrecondition()
         return translateDescription(description)
     }
 
@@ -32,7 +34,7 @@ class StatementTranslationService(
 
         val precondition = translators[preconditionName.removeAll("!")]
             ?.translate(withTranslatedParameters)
-            ?: error("Precondition translator not present for <$preconditionName>")
+            ?: throw UnknownPreconditionException(preconditionName)
 
         return if (preconditionName.startsWith("!")) {
             Negated(precondition)

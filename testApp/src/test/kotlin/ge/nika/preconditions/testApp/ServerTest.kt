@@ -58,8 +58,12 @@ class ServerTest {
         response.status shouldBe Status.BAD_REQUEST
         response.bodyString().fromJson<EvaluationResponse>().asClue {
             it.result shouldBe null
-            it.errors.size shouldBe 1
-            it.errors[0] shouldBe "Unknown type of parameter A"
+            it.errors.size shouldBe 0
+            it.parsingError!!.asClue { pe ->
+                pe.message shouldBe "Unknown type of parameter A!"
+                pe.startPosition shouldBe 7
+                pe.startPosition shouldBe 7
+            }
         }
     }
 }

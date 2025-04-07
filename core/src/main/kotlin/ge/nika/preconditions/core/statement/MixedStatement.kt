@@ -4,6 +4,7 @@ import ge.nika.preconditions.core.api.precondition.PreconditionDescription
 import ge.nika.preconditions.core.api.precondition.Statement
 import ge.nika.preconditions.core.api.template.TemplateContext
 import ge.nika.preconditions.core.api.template.toTemplateContext
+import ge.nika.preconditions.core.statement.OffsetStatement.Companion.withOffset
 import ge.nika.preconditions.core.utils.removeAll
 
 internal class MixedStatement(
@@ -16,7 +17,9 @@ internal class MixedStatement(
             val composingStatementStrings = BracedStatement(statementText).getFirstLevelSubstrings()
 
             PreconditionDescription(
-                parameters = composingStatementStrings.map { MixedStatement(it, templateContext).describePrecondition() },
+                parameters = composingStatementStrings.map {
+                    MixedStatement(it, templateContext).withOffset(statementText.indexOf(it)).describePrecondition()
+                },
                 preconditionName = composingStatementStrings.fold(statementText) { acc, statementString ->
                     acc.removeAll(statementString)
                 }.removeAll("(")
@@ -25,7 +28,7 @@ internal class MixedStatement(
             )
 
         } else {
-            ComplexStatement(statementText, templateContext).describePrecondition()
+            ThreeLineBiStatement(statementText, templateContext).describePrecondition()
         }
     }
 }

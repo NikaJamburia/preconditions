@@ -1,11 +1,13 @@
 package ge.nika.preconditions.testApp
 
+import ge.nika.preconditions.core.api.exceptions.StatementParsingException
 import org.http4k.core.Method
 import org.http4k.core.Response
 import org.http4k.core.Status
 import org.http4k.routing.RoutingHttpHandler
 import org.http4k.routing.bind
 import ge.nika.preconditions.core.api.template.toTemplateContext
+import ge.nika.preconditions.testApp.StatementParsingExceptionResponse.Companion.toResponse
 import org.http4k.routing.routes
 
 class Server {
@@ -21,9 +23,15 @@ class Server {
                     requestBody.preconditionText,
                     requestBody.templateObjects.toTemplateContext()
                 )
-                jsonResponse(Status.OK, EvaluationResponse(result, listOf()))
-            } catch (e: Exception) {
-                jsonResponse(Status.BAD_REQUEST, EvaluationResponse(null, listOf(e.message ?: "Unknown error")))
+                jsonResponse(Status.OK, EvaluationResponse(result))
+            }
+            catch (e: StatementParsingException) {
+                jsonResponse(Status.BAD_REQUEST, EvaluationResponse(parsingError = e.toResponse()))
+            }
+            catch (e: Exception) {
+                jsonResponse(Status.BAD_REQUEST, EvaluationResponse(
+                    errors = listOf(e.message ?: "Unknown error")
+                ))
             }
 
         }
@@ -43,9 +51,21 @@ data class EvaluatePreconditionRequest(
 )
 
 data class EvaluationResponse(
-    val result: Boolean?,
-    val errors: List<String>
+    val result: Boolean? = null,
+    val parsingError: StatementParsingExceptionResponse? = null,
+    val errors: List<String> = emptyList(),
 )
+
+data class StatementParsingExceptionResponse(
+    val message: String,
+    val startPosition: Int,
+    val endPosition: Int,
+) {
+    companion object {
+        fun StatementParsingException.toResponse() =
+            StatementParsingExceptionResponse(message, startPosition, endPosition)
+    }
+}
 
 fun jsonResponse(status: Status, body: Any) = Response(status)
     .header("content-type", "application/json")

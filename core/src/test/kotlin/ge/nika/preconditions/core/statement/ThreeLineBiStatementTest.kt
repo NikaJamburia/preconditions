@@ -2,13 +2,14 @@ package ge.nika.preconditions.core.statement
 
 import ge.nika.preconditions.core.api.precondition.PreconditionDescription
 import ge.nika.preconditions.core.api.template.toTemplateContext
+import ge.nika.preconditions.core.assertParsingError
 import io.kotest.matchers.shouldBe
 import org.junit.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 import kotlin.test.assertTrue
 
-class ComplexStatementTest {
+class ThreeLineBiStatementTest {
 
     @Test
     fun `should describe precondition as precondition of 2 different preconditions`() {
@@ -18,7 +19,7 @@ class ComplexStatementTest {
             'b' !IS 'b'
         """.trimIndent()
 
-        val description = ComplexStatement(statement).describePrecondition()
+        val description = ThreeLineBiStatement(statement).describePrecondition()
         assertEquals(description.preconditionName, "AND")
 
         val firstParameter = description.parameters[0]
@@ -46,7 +47,7 @@ class ComplexStatementTest {
             
         """.trimIndent()
 
-        val description = ComplexStatement(statement).describePrecondition()
+        val description = ThreeLineBiStatement(statement).describePrecondition()
         assertEquals(description.preconditionName, "AND")
 
         val firstParameter = description.parameters[0]
@@ -71,7 +72,7 @@ class ComplexStatementTest {
             'b' !IS 'b'
         """.trimIndent()
 
-        val description = ComplexStatement(statement, mapOf("custom" to "nika").toTemplateContext()).describePrecondition()
+        val description = ThreeLineBiStatement(statement, mapOf("custom" to "nika").toTemplateContext()).describePrecondition()
         assertEquals(description.preconditionName, "AND")
 
         val firstParameter = description.parameters[0]
@@ -82,31 +83,38 @@ class ComplexStatementTest {
     }
 
     @Test
-    fun `should throw error when statement is incomplete or invalid`() {
-        val incompleteStatement = "'a IS 'a'"
-        assertFailsWith<IllegalStateException>("Invalid complex statement: $incompleteStatement") {
-            ComplexStatement(incompleteStatement).describePrecondition()
-        }
+    fun `should be able to describe plain statement`() {
+        val plainStatement = "'a' IS 'b'"
+        val description = ThreeLineBiStatement(plainStatement).describePrecondition()
 
+        description.parameters[0] shouldBe "a"
+        description.parameters[1] shouldBe "b"
+        description.preconditionName shouldBe "IS"
+    }
+
+    @Test
+    fun `should throw error when statement is  invalid`() {
         val invalidStatement = """
             'a IS 'a'
             AND
             'b' !IS 'b'
             OR
         """.trimIndent()
-        assertFailsWith<IllegalStateException>("Invalid complex statement: $invalidStatement") {
-            ComplexStatement(invalidStatement).describePrecondition()
-        }
+        assertParsingError(0, invalidStatement.lastIndex) {
+            ThreeLineBiStatement(invalidStatement).describePrecondition()
+        }.message shouldBe "ThreeLineBiStatement should consist of 3 lines!"
     }
 
     @Test
-    fun `should be able to describe plain statement`() {
-        val plainStatement = "'a' IS 'b'"
-        val description = ComplexStatement(plainStatement).describePrecondition()
-
-        description.parameters[0] shouldBe "a"
-        description.parameters[1] shouldBe "b"
-        description.preconditionName shouldBe "IS"
+    fun `should correctly handle errors from plain statement`() {
+        val invalidStatement = """
+            'a' IS 'a'
+            AND
+            'b' !IS b'
+        """.trimIndent()
+        assertParsingError(invalidStatement.indexOf(" b'")+1, invalidStatement.lastIndex) {
+            ThreeLineBiStatement(invalidStatement).describePrecondition()
+        }.message shouldBe "Unknown type of parameter b'!"
     }
 
 }

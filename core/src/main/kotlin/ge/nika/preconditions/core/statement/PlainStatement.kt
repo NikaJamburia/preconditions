@@ -1,12 +1,10 @@
 package ge.nika.preconditions.core.statement
 
+import ge.nika.preconditions.core.api.exceptions.parsingError
 import ge.nika.preconditions.core.api.precondition.PreconditionDescription
 import ge.nika.preconditions.core.api.precondition.Statement
 import ge.nika.preconditions.core.api.template.TemplateContext
-import ge.nika.preconditions.core.api.template.toDottedQuery
 import ge.nika.preconditions.core.api.template.toTemplateContext
-import ge.nika.preconditions.core.utils.isNumber
-import ge.nika.preconditions.core.utils.isTemplate
 import ge.nika.preconditions.core.utils.removeAll
 
 internal class PlainStatement(
@@ -20,10 +18,29 @@ internal class PlainStatement(
             .removeAll("\n")
             .split(" ")
 
-        check(parts.size == 3) { "Invalid plain statement: <$string>" }
+        if (parts.size != 3) {
+            val startPosition = if (parts.size < 3) {
+                string.lastIndex
+            } else {
+                parts.startIndexOfElement(3)
+            }
+            parsingError(
+                message = "Statement contain must consist of 3 parts separated by spaces!",
+                startPosition = startPosition,
+                endPosition = string.lastIndex
+            )
+        }
 
-        val firstParameter = PlainStatementFragment(parts[0], templateContext).value()
-        val secondParameter = PlainStatementFragment(parts[2], templateContext).value()
+        val firstParameter = PlainStatementParameter(
+            stringValue = parts[0],
+            indexOffset = parts.startIndexOfElement(0),
+            templateContext = templateContext,
+        ).value()
+        val secondParameter = PlainStatementParameter(
+            stringValue = parts[2],
+            indexOffset = parts.startIndexOfElement(2),
+            templateContext = templateContext
+        ).value()
         val preconditionName = parts[1]
 
         return PreconditionDescription(
@@ -32,28 +49,10 @@ internal class PlainStatement(
         )
     }
 
-}
-
-internal class PlainStatementFragment(
-    private val stringValue: String,
-    private val templateContext: TemplateContext
-) {
-    fun value(): Any? {
-        return if (stringValue.startsWith("'") && stringValue.endsWith("'")) {
-            stringValue.removeAll("'")
-        } else if (stringValue.isNumber()) {
-            stringValue.toDouble()
-        } else if (stringValue.isTemplate()) {
-            val templateParamName = stringValue
-                .removeAll("{")
-                .removeAll("}")
-            templateContext.findValue(templateParamName.toDottedQuery())
-        } else if (stringValue == "null") {
-            null
+    private fun List<String>.startIndexOfElement(index: Int): Int =
+        if (index == 0) {
+            0
+        } else {
+            take(index).fold(0) { acc, s -> acc + s.length } + index
         }
-        else {
-            error("Unknown type of parameter $stringValue")
-        }
-    }
 }
-

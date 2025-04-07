@@ -1,12 +1,14 @@
 package ge.nika.preconditions.core.statement
 
+import ge.nika.preconditions.core.api.exceptions.parsingError
 import ge.nika.preconditions.core.api.precondition.PreconditionDescription
 import ge.nika.preconditions.core.api.precondition.Statement
 import ge.nika.preconditions.core.api.template.TemplateContext
 import ge.nika.preconditions.core.api.template.toTemplateContext
+import ge.nika.preconditions.core.statement.OffsetStatement.Companion.withOffset
 
 
-internal class ComplexStatement(
+internal class ThreeLineBiStatement(
     private val statementText: String,
     private val templateContext: TemplateContext = mapOf<String, Any>().toTemplateContext()
 ): Statement {
@@ -21,16 +23,23 @@ internal class ComplexStatement(
         }
 
         check(lines.size == 3) {
-            "Invalid complex statement: $statementText"
+            parsingError(
+                message = "ThreeLineBiStatement should consist of 3 lines!",
+                startPosition = 0,
+                endPosition = statementText.lastIndex,
+            )
         }
 
         return PreconditionDescription(
-            listOf(
-                PlainStatement(lines[0], templateContext).describePrecondition(),
-                PlainStatement(lines[2], templateContext).describePrecondition()
+            parameters = listOf(
+                lines[0].toStatement().describePrecondition(),
+                lines[2].toStatement().describePrecondition()
             ),
-            lines[1]
+            preconditionName = lines[1]
         )
 
     }
+
+    private fun String.toStatement(): Statement =
+        PlainStatement(this, templateContext).withOffset(statementText.indexOf(this))
 }

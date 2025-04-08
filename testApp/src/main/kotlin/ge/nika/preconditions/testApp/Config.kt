@@ -3,7 +3,7 @@ package ge.nika.preconditions.testApp
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import ge.nika.preconditions.core.api.corePreconditions
 import ge.nika.preconditions.library.Preconditions
-import ge.nika.preconditions.library.configurePreconditions
+import ge.nika.preconditions.library.config.configurePreconditions
 
 private val preconditionsConfig = configurePreconditions {
     registerModule { corePreconditions() }

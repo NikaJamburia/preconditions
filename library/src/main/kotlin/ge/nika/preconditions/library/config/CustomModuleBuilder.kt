@@ -1,4 +1,4 @@
-package ge.nika.preconditions.library
+package ge.nika.preconditions.library.config
 
 import ge.nika.preconditions.core.api.PreconditionsModule
 import ge.nika.preconditions.core.api.precondition.PreconditionTranslator

@@ -2,6 +2,8 @@ package ge.nika.preconditions.core.statement
 
 import ge.nika.preconditions.core.api.exceptions.parsingError
 import ge.nika.preconditions.core.api.template.TemplateContext
+import ge.nika.preconditions.core.api.template.templateEnd
+import ge.nika.preconditions.core.api.template.templateStart
 import ge.nika.preconditions.core.api.template.toDottedQuery
 import ge.nika.preconditions.core.utils.isNumber
 import ge.nika.preconditions.core.utils.isTemplate
@@ -33,8 +35,8 @@ internal class PlainStatementParameter(
 
     private fun findTemplateValue(): Any {
         val dottedQuery = stringValue
-            .removeAll("{")
-            .removeAll("}")
+            .removeAll(templateStart)
+            .removeAll(templateEnd)
             .toDottedQuery()
         return try {
             templateContext.findValue(dottedQuery)

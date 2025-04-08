@@ -3,6 +3,8 @@ package ge.nika.preconditions.library
 import ge.nika.preconditions.core.api.corePreconditions
 import ge.nika.preconditions.core.api.precondition.PreconditionDescription
 import ge.nika.preconditions.core.api.precondition.PreconditionTranslator
+import ge.nika.preconditions.library.config.PreconditionsConfigBuilder
+import ge.nika.preconditions.library.config.customModule
 import io.kotest.assertions.asClue
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.matchers.shouldBe

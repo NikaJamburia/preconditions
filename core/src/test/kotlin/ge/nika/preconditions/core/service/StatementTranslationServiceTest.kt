@@ -1,5 +1,6 @@
 package ge.nika.preconditions.core.service
 
+import ge.nika.preconditions.core.api.exceptions.UnknownPreconditionException
 import ge.nika.preconditions.core.api.precondition.Precondition
 import ge.nika.preconditions.core.api.precondition.PreconditionTranslator
 import ge.nika.preconditions.core.api.service.StatementTranslationService
@@ -60,7 +61,7 @@ class StatementTranslationServiceTest {
     fun `should throw exception if precondition translator is not present`() {
         val statement = "'nika' EQUALS 'bika'"
 
-        val exception = assertThrows<IllegalStateException> { service.translate(statement) }
+        val exception = assertThrows<UnknownPreconditionException> { service.translate(statement) }
         exception.message shouldBe "Precondition translator not present for <EQUALS>"
     }
 

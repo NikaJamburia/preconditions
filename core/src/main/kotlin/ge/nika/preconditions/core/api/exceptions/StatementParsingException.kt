@@ -5,7 +5,14 @@ data class StatementParsingException(
     override val message: String,
     val startPosition: Int,
     val endPosition: Int,
-) : RuntimeException()
+) : PreconditionsException() {
+    override fun data(): PreconditionsExceptionData = PreconditionsExceptionData(
+        type = this::class.simpleName!!,
+        message = message,
+        indexRange = startPosition..endPosition,
+        additionalData = emptyMap(),
+    )
+}
 
 fun parsingError(
     message: String,

@@ -2,6 +2,7 @@ package ge.nika.preconditions.library
 
 import ge.nika.preconditions.core.api.precondition.PreconditionDescription
 import ge.nika.preconditions.core.api.precondition.PreconditionTranslator
+import ge.nika.preconditions.library.config.CustomModuleBuilder
 import io.kotest.assertions.asClue
 import io.kotest.matchers.shouldBe
 import org.junit.Test

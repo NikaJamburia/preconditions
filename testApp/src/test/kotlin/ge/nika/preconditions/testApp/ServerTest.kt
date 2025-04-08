@@ -22,7 +22,7 @@ class ServerTest {
         response.status shouldBe Status.OK
         response.bodyString().fromJson<EvaluationResponse>().asClue {
             it.result shouldBe true
-            it.errors.size shouldBe 0
+            it.exceptions.size shouldBe 0
         }
     }
 
@@ -43,7 +43,7 @@ class ServerTest {
         response.status shouldBe Status.OK
         response.bodyString().fromJson<EvaluationResponse>().asClue {
             it.result shouldBe true
-            it.errors.size shouldBe 0
+            it.exceptions.size shouldBe 0
         }
     }
 
@@ -58,11 +58,10 @@ class ServerTest {
         response.status shouldBe Status.BAD_REQUEST
         response.bodyString().fromJson<EvaluationResponse>().asClue {
             it.result shouldBe null
-            it.errors.size shouldBe 0
-            it.parsingError!!.asClue { pe ->
+            it.exceptions.size shouldBe 1
+            it.exceptions[0].asClue { pe ->
                 pe.message shouldBe "Unknown type of parameter A!"
-                pe.startPosition shouldBe 7
-                pe.startPosition shouldBe 7
+                pe.indexRange shouldBe 7..7
             }
         }
     }

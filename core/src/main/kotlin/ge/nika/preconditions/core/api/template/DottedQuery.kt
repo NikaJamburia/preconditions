@@ -17,4 +17,4 @@ class DottedQuery(
     }
 }
 
-internal fun String.toDottedQuery(): DottedQuery = DottedQuery(this)
+fun String.toDottedQuery(): DottedQuery = DottedQuery(this)

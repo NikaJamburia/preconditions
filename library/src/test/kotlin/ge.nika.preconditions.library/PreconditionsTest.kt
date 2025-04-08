@@ -1,6 +1,6 @@
 package ge.nika.preconditions.library
 
-import ge.nika.preconditions.core.api.corePreconditions
+import ge.nika.preconditions.core.api.config.CorePreconditions
 import ge.nika.preconditions.core.api.exceptions.UnknownPreconditionException
 import ge.nika.preconditions.core.api.precondition.PreconditionTranslator
 import ge.nika.preconditions.library.config.PreconditionsConfig
@@ -14,11 +14,11 @@ import org.junit.jupiter.api.assertThrows
 class PreconditionsTest {
 
     private val preconditionsConfig: PreconditionsConfig = configurePreconditions {
-        registerModule { corePreconditions() }
+        registerModule { CorePreconditions.withoutAliases() }
         registerModule {
-            customModule {
-                name = "custom"
+            customModule("custom") {
                 "TEST_TRUE" translatedBy PreconditionTranslator { TestPrecondition(true) }
+                "TEST_TRUE_ALIAS" aliasFor "TEST_TRUE"
             }
         }
         registerPrecondition("TEST_FALSE") { TestPrecondition(false) }
@@ -27,20 +27,16 @@ class PreconditionsTest {
     private val subject = Preconditions(preconditionsConfig)
 
     @Test
-    fun `evaluates given core and custom preconditions`() {
-
-
-
+    fun `evaluates given core and custom preconditions and aliases`() {
         subject.evaluate("'a' IS 'b'") shouldBe false
         subject.evaluate("1 GREATER_THEN 0") shouldBe true
         subject.evaluate("'a' TEST_TRUE 'b'") shouldBe true
+        subject.evaluate("'a' TEST_TRUE_ALIAS 'b'") shouldBe true
         subject.evaluate("'a' TEST_FALSE 'b'") shouldBe false
-
     }
 
     @Test
     fun `throws exception when precondition is not defined in config`() {
-
         val exception = assertThrows<UnknownPreconditionException> {
             Preconditions(preconditionsConfig).evaluate("'a' SOMETHING 'b'") shouldBe false
         }

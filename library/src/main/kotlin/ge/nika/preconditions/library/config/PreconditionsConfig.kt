@@ -1,6 +1,6 @@
 package ge.nika.preconditions.library.config
 
-import ge.nika.preconditions.core.api.PreconditionsModule
+import ge.nika.preconditions.core.api.config.PreconditionsModule
 import ge.nika.preconditions.core.api.precondition.PreconditionTranslator
 
 
@@ -30,9 +30,10 @@ class PreconditionsConfigBuilder {
                 "Precondition '$name' already defined in module <${it.name}>."
             }
         }
-        modules.add(customModule {
-            this.name = name
-            name translatedBy translator }
+        modules.add(
+            customModule(name) {
+                name translatedBy translator
+            }
         )
     }
 

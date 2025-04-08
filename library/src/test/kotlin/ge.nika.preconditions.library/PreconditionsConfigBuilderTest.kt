@@ -1,6 +1,6 @@
 package ge.nika.preconditions.library
 
-import ge.nika.preconditions.core.api.corePreconditions
+import ge.nika.preconditions.core.api.config.CorePreconditions
 import ge.nika.preconditions.core.api.precondition.PreconditionDescription
 import ge.nika.preconditions.core.api.precondition.PreconditionTranslator
 import ge.nika.preconditions.library.config.PreconditionsConfigBuilder
@@ -16,11 +16,10 @@ class PreconditionsConfigBuilderTest {
     fun `throws exception when modules are conflicting`() {
 
         val builder = PreconditionsConfigBuilder()
-        builder.registerModule { corePreconditions() }
+        builder.registerModule { CorePreconditions.withoutAliases() }
 
         val exception = shouldThrow<IllegalStateException> {
-            builder.registerModule { customModule {
-                name = "TEST"
+            builder.registerModule { customModule("TEST") {
                 "IS" translatedBy PreconditionTranslator { TestPrecondition(true) }
             } }
         }
@@ -31,7 +30,7 @@ class PreconditionsConfigBuilderTest {
     fun `throws exception when trying to register conflicting single precondition`() {
 
         val builder = PreconditionsConfigBuilder()
-        builder.registerModule { corePreconditions() }
+        builder.registerModule { CorePreconditions.withoutAliases() }
 
         val exception = shouldThrow<IllegalStateException> {
             builder.registerPrecondition("IS") { TestPrecondition(true) }
@@ -55,12 +54,10 @@ class PreconditionsConfigBuilderTest {
     fun `adds given module to configuration`() {
         val builder = PreconditionsConfigBuilder()
 
-        val module = customModule {
-            name = "my module"
+        val module = customModule("my module") {
             "IS_TRUE" translatedBy PreconditionTranslator { TestPrecondition(true) }
         }
-        val module2 = customModule {
-            name = "my module 2"
+        val module2 = customModule("my module") {
             "IS_FALSE" translatedBy PreconditionTranslator { TestPrecondition(false) }
         }
 
@@ -107,7 +104,7 @@ class PreconditionsConfigBuilderTest {
         val builder = PreconditionsConfigBuilder()
 
         builder.registerPrecondition("IS_TRUE") { TestPrecondition(true) }
-        builder.registerModule { customModule { name = "module"
+        builder.registerModule { customModule("module") {
             "IS_FALSE" translatedBy PreconditionTranslator { TestPrecondition(false) }
             "IS_TRUE_M" translatedBy PreconditionTranslator { TestPrecondition(true) }
         } }

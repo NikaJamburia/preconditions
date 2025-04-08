@@ -1,7 +1,7 @@
 package ge.nika.preconditions.core.translate
 
 import ge.nika.preconditions.core.api.precondition.PreconditionDescription
-import ge.nika.preconditions.core.api.precondition.isGreaterTranslator
+import ge.nika.preconditions.core.api.precondition.greaterThenTranslator
 import ge.nika.preconditions.core.precondition.IsGreater
 import io.kotest.assertions.asClue
 import io.kotest.assertions.throwables.shouldThrow
@@ -18,7 +18,7 @@ class IsGreaterTest {
             preconditionName = ">"
         )
 
-        val precondition = isGreaterTranslator.translate(description)
+        val precondition = greaterThenTranslator.translate(description)
 
         (precondition is IsGreater) shouldBe true
         precondition.asBoolean() shouldBe false
@@ -31,7 +31,7 @@ class IsGreaterTest {
             parameters = listOf(3, 2L),
             preconditionName = ">"
         )
-        isGreaterTranslator.translate(intAndLong).asClue {
+        greaterThenTranslator.translate(intAndLong).asClue {
             (it is IsGreater) shouldBe true
             it.asBoolean() shouldBe true
         }
@@ -40,7 +40,7 @@ class IsGreaterTest {
             parameters = listOf(3L, "5.00".toBigDecimal()),
             preconditionName = ">"
         )
-        isGreaterTranslator.translate(longAndBigDecimal).asClue {
+        greaterThenTranslator.translate(longAndBigDecimal).asClue {
             (it is IsGreater) shouldBe true
             it.asBoolean() shouldBe false
         }
@@ -49,7 +49,7 @@ class IsGreaterTest {
             parameters = listOf(3.123, "3.10".toBigDecimal()),
             preconditionName = ">"
         )
-        isGreaterTranslator.translate(doubleAndBigDecimal).asClue {
+        greaterThenTranslator.translate(doubleAndBigDecimal).asClue {
             (it is IsGreater) shouldBe true
             it.asBoolean() shouldBe true
         }
@@ -58,7 +58,7 @@ class IsGreaterTest {
     @Test
     fun `throws exception number of given parameters is not a number`() {
         val exception = shouldThrow<IllegalStateException> {
-            isGreaterTranslator.translate(
+            greaterThenTranslator.translate(
                 PreconditionDescription(
                 listOf(1L, "2"), ">")
             )
@@ -69,7 +69,7 @@ class IsGreaterTest {
     @Test
     fun `throws exception number of given parameters is not 2`() {
         val exception = shouldThrow<IllegalStateException> {
-            isGreaterTranslator.translate(PreconditionDescription(listOf(), ">"))
+            greaterThenTranslator.translate(PreconditionDescription(listOf(), ">"))
         }
         exception.message shouldBe "> precondition must have 2 parameters. 0 provided"
     }

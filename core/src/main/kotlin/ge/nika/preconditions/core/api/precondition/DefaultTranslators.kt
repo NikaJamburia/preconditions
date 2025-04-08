@@ -26,7 +26,7 @@ val isTranslator = PreconditionTranslator {
     )
 }
 
-val isGreaterTranslator = PreconditionTranslator {
+val greaterThenTranslator = PreconditionTranslator {
     it.verifyParameterNumber(2)
 
     val firstParam = it.parameters[0]

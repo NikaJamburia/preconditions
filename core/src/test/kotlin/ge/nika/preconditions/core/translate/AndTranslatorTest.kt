@@ -12,7 +12,7 @@ import org.junit.Test
 class AndTranslatorTest {
 
     @Test
-    fun `translates given description to And precondition`() {
+    fun `translates given description with precondition parameters to And precondition`() {
         val description = PreconditionDescription(
             parameters = listOf(Is(1, 1), IsGreater(1, 2)),
             preconditionName = "AND"
@@ -25,13 +25,20 @@ class AndTranslatorTest {
     }
 
     @Test
-    fun `throws exception when any of the parameters isn't a precondition`() {
+    fun `translates given description with boolean parameters to And precondition`() {
         val description = PreconditionDescription(
-            parameters = listOf(1, Is(1, 2)),
+            parameters = listOf(true, true),
             preconditionName = "AND"
         )
-        val exception = shouldThrow<IllegalStateException> { andTranslator.translate(description) }
-        exception.message shouldBe "Both parameters of AND precondition should be preconditions"
+
+        val precondition = andTranslator.translate(description)
+
+        (precondition is And) shouldBe true
+        precondition.asBoolean() shouldBe true
+
+        andTranslator.translate(PreconditionDescription(
+            listOf(true, false),"AND"
+        )).asBoolean() shouldBe false
     }
 
     @Test
@@ -40,5 +47,26 @@ class AndTranslatorTest {
             andTranslator.translate(PreconditionDescription(listOf(Is(1, 2), Is(1, 2), Is(1, 2)),"AND"))
         }
         exception.message shouldBe "AND precondition must have 2 parameters. 3 provided"
+    }
+
+    @Test
+    fun `throws exception when both of parameters arent preconditions nor booleans`() {
+        shouldThrow<IllegalStateException> {
+            andTranslator.translate(
+                PreconditionDescription(listOf(1, Is(1, 2)),"AND")
+            )
+        }.message shouldBe "Type of both parameters of AND precondition must be either precondition or boolean"
+
+        shouldThrow<IllegalStateException> {
+            andTranslator.translate(
+                PreconditionDescription(listOf(true, Is(1, 2)),"AND")
+            )
+        }.message shouldBe "Type of both parameters of AND precondition must be either precondition or boolean"
+
+        shouldThrow<IllegalStateException> {
+            andTranslator.translate(
+                PreconditionDescription(listOf(true, 1),"AND")
+            )
+        }.message shouldBe "Type of both parameters of AND precondition must be either precondition or boolean"
     }
 }

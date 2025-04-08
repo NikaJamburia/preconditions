@@ -4,18 +4,26 @@ import ge.nika.preconditions.core.precondition.And
 import ge.nika.preconditions.core.precondition.Is
 import ge.nika.preconditions.core.precondition.IsGreater
 import ge.nika.preconditions.core.precondition.Or
+import kotlin.reflect.KClass
 
 val andTranslator = PreconditionTranslator {
 
     it.verifyParameterNumber(2)
 
-    val firstParam = it.parameters[0]
-    val secondParam = it.parameters[1]
-
-    check(firstParam is Precondition && secondParam is Precondition) {
-        "Both parameters of ${it.preconditionName} precondition should be preconditions"
+    check(
+        it.parameters.all { p -> p is Precondition } ||
+                it.parameters.all { p -> p is Boolean }
+    ) {
+        "Type of both parameters of AND precondition must be either precondition or boolean"
     }
-    And(firstParam, secondParam)
+
+    when {
+        it.parameters.all { p -> p is Precondition } ->
+            And.ofPreconditions(it.parameters[0] as Precondition, it.parameters[1] as Precondition)
+        it.parameters.all { p -> p is Boolean } ->
+            And.ofBooleans(it.parameters[0] as Boolean, it.parameters[1] as Boolean)
+        else -> error("Type of both parameters of AND precondition must be either precondition or boolean")
+    }
 }
 
 val isTranslator = PreconditionTranslator {

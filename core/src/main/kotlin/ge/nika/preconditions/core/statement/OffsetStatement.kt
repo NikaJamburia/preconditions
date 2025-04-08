@@ -17,11 +17,12 @@ internal class OffsetStatement(
     override fun describePrecondition(): PreconditionDescription {
         try {
             return statement.describePrecondition()
+                .withMetadataParam("offset", indexOffset)
         } catch (e: StatementParsingException) {
             throw StatementParsingException(
                 e.message,
                 indexOffset + e.startPosition,
-                indexOffset + (e.endPosition ?: 0)
+                indexOffset + e.endPosition
             )
         }
     }

@@ -5,6 +5,7 @@ import ge.nika.preconditions.core.api.precondition.PreconditionDescription
 import ge.nika.preconditions.core.api.precondition.Statement
 import ge.nika.preconditions.core.api.template.TemplateContext
 import ge.nika.preconditions.core.api.template.toTemplateContext
+import ge.nika.preconditions.core.utils.Metadata
 import ge.nika.preconditions.core.utils.removeAll
 
 internal class PlainStatement(
@@ -20,7 +21,7 @@ internal class PlainStatement(
 
         if (parts.size != 3) {
             val startPosition = if (parts.size < 3) {
-                string.lastIndex
+                0
             } else {
                 parts.startIndexOfElement(3)
             }
@@ -46,7 +47,7 @@ internal class PlainStatement(
         return PreconditionDescription(
             listOf(firstParameter, secondParameter),
             preconditionName
-        )
+        ).withMetadataParam(Metadata.OFFSET, string.length)
     }
 
     private fun List<String>.startIndexOfElement(index: Int): Int =

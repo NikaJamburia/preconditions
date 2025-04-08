@@ -12,6 +12,9 @@ internal fun String.isTemplate(): Boolean =
 internal fun String.isNumber(): Boolean =
     this.matches("-?\\d+(\\.\\d+)?".toRegex())
 
+internal fun String.representsString(): Boolean =
+    this.startsWith("'") && this.endsWith("'")
+
 internal fun String.isAllCaps(): Boolean =
     this.toCharArray().all { it.isUpperCase() }
 

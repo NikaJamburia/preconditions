@@ -73,6 +73,16 @@ class PlainStatementTest {
     }
 
     @Test
+    fun `should correctly describe true and false`() {
+        val text = "true OR false"
+        val description = PlainStatement(text).describePrecondition()
+
+        assertEquals(description.parameters.first(), true)
+        assertEquals(description.parameters.last(), false)
+        assertEquals(description.preconditionName, "OR")
+    }
+
+    @Test
     fun `should throw error if any of parameters is of unknown types`() {
         assertParsingError(0, 0) {
             PlainStatement("a IS 'a'").describePrecondition()

@@ -8,6 +8,7 @@ import ge.nika.preconditions.core.api.template.toDottedQuery
 import ge.nika.preconditions.core.utils.isNumber
 import ge.nika.preconditions.core.utils.isTemplate
 import ge.nika.preconditions.core.utils.removeAll
+import ge.nika.preconditions.core.utils.representsString
 
 internal class PlainStatementParameter(
     private val stringValue: String,
@@ -15,21 +16,20 @@ internal class PlainStatementParameter(
     private val templateContext: TemplateContext
 ) {
     fun value(): Any? {
-        return if (stringValue.startsWith("'") && stringValue.endsWith("'")) {
-            stringValue.removeAll("'")
-        } else if (stringValue.isNumber()) {
-            stringValue.toDouble()
-        } else if (stringValue.isTemplate()) {
-            findTemplateValue()
-        } else if (stringValue == "null") {
-            null
-        }
-        else {
-            parsingError(
-                message = "Unknown type of parameter $stringValue!",
-                startPosition = indexOffset,
-                endPosition = indexOffset + stringValue.lastIndex,
-            )
+        return when {
+            stringValue.representsString() -> stringValue.removeAll("'")
+            stringValue.isNumber() -> stringValue.toDouble()
+            stringValue.isTemplate() -> findTemplateValue()
+            stringValue == "true" -> true
+            stringValue == "false" -> false
+            stringValue == "null" -> null
+            else -> {
+                parsingError(
+                    message = "Unknown type of parameter $stringValue!",
+                    startPosition = indexOffset,
+                    endPosition = indexOffset + stringValue.lastIndex,
+                )
+            }
         }
     }
 

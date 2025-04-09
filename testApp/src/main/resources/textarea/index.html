@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+
+    <style>
+        #preconditionsTextArea {
+            width: 300px;
+            height: 200px;
+            border: 1px solid #ccc;
+            padding: 5px;
+        }
+        #checkSyntaxBtn {
+            margin-top: 10px;
+        }
+        .text-green {
+            color: green;
+        }
+        .text-red {
+            color: darkred;
+        }
+        .error-part {
+            font-weight: bold;
+            border-bottom: 2px solid red;
+        }
+    </style>
+</head>
+<script src="PreconditionsTextArea.js"></script>
+
+<body>
+    <div>
+        <div id="preconditionsTextArea" spellcheck="false"></div>
+        <button id="checkSyntaxBtn">Check syntax</button>
+        <label id="result"></label>
+    </div>
+    <textarea id="a"></textarea>
+</body>
+</html>

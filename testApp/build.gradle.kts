@@ -1,3 +1,8 @@
+plugins {
+    ge.nika.preconditions.build.preconditionsCommon
+    id("com.gradleup.shadow") version "9.0.0-beta11"
+}
+
 apply(plugin = "com.gradleup.shadow")
 
 dependencies {

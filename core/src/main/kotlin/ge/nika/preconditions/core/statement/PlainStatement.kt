@@ -47,7 +47,7 @@ internal class PlainStatement(
         return PreconditionDescription(
             listOf(firstParameter, secondParameter),
             preconditionName
-        ).withMetadataParam(Metadata.OFFSET, string.length)
+        ).withMetadataParam(Metadata.STRLEN, string.length)
     }
 
     private fun List<String>.startIndexOfElement(index: Int): Int =

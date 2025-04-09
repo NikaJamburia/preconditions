@@ -9,7 +9,7 @@ data class StatementParsingException(
     override fun data(): PreconditionsExceptionData = PreconditionsExceptionData(
         type = this::class.simpleName!!,
         message = message,
-        indexRange = startPosition..endPosition,
+        indexRange = RangeData(startPosition, endPosition),
         additionalData = emptyMap(),
     )
 }

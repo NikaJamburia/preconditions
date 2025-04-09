@@ -61,7 +61,8 @@ class ServerTest {
             it.exceptions.size shouldBe 1
             it.exceptions[0].asClue { pe ->
                 pe.message shouldBe "Unknown type of parameter A!"
-                pe.indexRange shouldBe 7..7
+                pe.indexRange.start shouldBe 7
+                pe.indexRange.end shouldBe 7
             }
         }
     }

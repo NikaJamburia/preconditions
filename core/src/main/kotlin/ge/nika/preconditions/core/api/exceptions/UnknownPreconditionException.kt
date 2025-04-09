@@ -6,7 +6,7 @@ data class UnknownPreconditionException(
     override fun data(): PreconditionsExceptionData = PreconditionsExceptionData(
         type = this::class.simpleName!!,
         message = message,
-        indexRange = 0..0,
+        indexRange = RangeData(0, 0),
         additionalData = mapOf("preconditionName" to preconditionName),
     )
 

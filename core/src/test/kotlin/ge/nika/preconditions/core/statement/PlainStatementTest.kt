@@ -103,7 +103,7 @@ class PlainStatementTest {
             PlainStatement("a IS 'a' AND").describePrecondition()
         }.message shouldBe "Statement contain must consist of 3 parts separated by spaces!"
 
-        assertParsingError(3, 3) {
+        assertParsingError(0, 3) {
             PlainStatement("a IS").describePrecondition()
         }.message shouldBe "Statement contain must consist of 3 parts separated by spaces!"
     }

@@ -46,7 +46,7 @@ class PreconditionsTest {
 
     @Test
     fun `returns success if syntax check is successfull`() {
-        val result = subject.checkSyntax("'a' IS 'b'")
+        val result = subject.checkSyntax("{user.name} IS 'b'")
         result.isSuccess shouldBe true
         result.exceptions.size shouldBe 0
     }
@@ -69,23 +69,17 @@ class PreconditionsTest {
     }
 
     @Test
-    fun `returns error from evaluation and template variables together`() {
+    fun `returns error from evaluation if template variables are correct`() {
         val str = """
-            {user.full name.first} SOMETHING 'Nika'
+            {user.fullname.first} SOMETHING 'Nika'
         """.trimIndent()
 
         val result = subject.checkSyntax(str)
 
         result.isSuccess shouldBe false
-        result.exceptions.size shouldBe 2
+        result.exceptions.size shouldBe 1
 
         result.exceptions[0].asClue {
-            it.type shouldBe "StatementParsingException"
-            it.message shouldBe "Template error: DottedQuery can't contain white spaces!"
-            it.indexRange shouldBe RangeData(1, 20)
-        }
-
-        result.exceptions[1].asClue {
             it.type shouldBe "UnknownPreconditionException"
             it.message shouldBe "Precondition translator not present for <SOMETHING>"
             it.indexRange shouldBe RangeData(start=0, end=0)

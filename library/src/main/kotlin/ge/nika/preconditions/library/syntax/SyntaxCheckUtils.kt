@@ -5,10 +5,10 @@ import ge.nika.preconditions.core.api.template.templateRegex
 import ge.nika.preconditions.core.api.template.templateStart
 import ge.nika.preconditions.core.api.template.toTemplateContext
 
-val syntaxCheckTestTemplateVariable = "test"
-val syntaxCheckTemplateContext =
+internal val syntaxCheckTestTemplateVariable = "test"
+internal val syntaxCheckTemplateContext =
     mapOf(syntaxCheckTestTemplateVariable to syntaxCheckTestTemplateVariable).toTemplateContext()
 
-fun String.replaceTemplateVariables(): String =
+internal fun String.replaceTemplateVariables(): String =
     replace(templateRegex, "${templateStart}$syntaxCheckTestTemplateVariable$templateEnd")
 

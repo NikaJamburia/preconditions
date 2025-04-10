@@ -17,5 +17,8 @@ data class SyntaxCheckResult(
             } else {
                 fail(exceptions)
             }
+
+        fun ofException(exception: PreconditionsExceptionData): SyntaxCheckResult =
+            fail(listOf(exception))
     }
 }

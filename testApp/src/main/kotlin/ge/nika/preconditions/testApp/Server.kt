@@ -12,7 +12,7 @@ import org.http4k.routing.routes
 
 class Server {
 
-    fun getRoutes() = routes(evaluate(), ping())
+    fun getRoutes() = routes(evaluate(), ping(), checkSyntax())
 
     private fun evaluate(): RoutingHttpHandler =
         "evaluate" bind Method.POST to { request ->
@@ -27,6 +27,22 @@ class Server {
             }
             catch (e: PreconditionsException) {
                 jsonResponse(Status.BAD_REQUEST, EvaluationResponse(exceptions = listOf(e.data())))
+            }
+            catch (e: Exception) {
+                jsonResponse(Status.BAD_REQUEST, e.message ?: "Unknown error")
+            }
+
+        }
+
+    private fun checkSyntax(): RoutingHttpHandler =
+        "check-syntax" bind Method.POST to { request ->
+            val requestBody = request.bodyString().fromJson<EvaluatePreconditionRequest>()
+
+            try {
+                val result = PRECONDITIONS.checkSyntax(
+                    requestBody.preconditionText,
+                )
+                jsonResponse(Status.OK, result)
             }
             catch (e: Exception) {
                 jsonResponse(Status.BAD_REQUEST, e.message ?: "Unknown error")

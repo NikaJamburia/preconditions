@@ -1,29 +1,52 @@
+const { fromEvent, of, tap, delay, from } = rxjs;
+
 const ID = "preconditionsTextArea"
 
-document.addEventListener("DOMContentLoaded", () => {
-    let div = document.getElementById(ID)
-    div.contentEditable = "true"
+function initLoadingDiv() {
+    let div = document.createElement('div');
+    div.innerHTML = `
+        <div id="loading" class="loading-container">
+            <img src="loading.gif" height="40">
+        </div>
+    `.trim();
+    return div.firstChild
+}
 
-    document.getElementById("checkSyntaxBtn").addEventListener("click", () => {
-        let originalText = div.innerText;
-        let checkResult = performSyntaxCheck(originalText)
-        let resultLabel = document.getElementById("result")
+const loadingDiv = initLoadingDiv()
 
-        if (checkResult.isSuccess) {
-            displaySuccess(resultLabel)
-        } else {
-            displayFail(resultLabel)
-            div.innerHTML = checkResult.exceptions.reduce(
-                (accumulator, exception) => highlightSubstring(
-                    exception,
-                    accumulator,
-                    accumulator.length - originalText.length
-                ),
-                originalText,
-            ).replaceAll("\n", "<br/>")
-        }
+fromEvent(document, "DOMContentLoaded").subscribe(() => {
+    let editorDiv = document.getElementById(ID)
+    unlock(editorDiv)
+
+    fromEvent(document.getElementById("checkSyntaxBtn"), "click").subscribe(() => {
+        let originalText = editorDiv.innerText;
+
+        lock(editorDiv)
+        performSyntaxCheck(originalText)
+            .pipe(
+                tap(result => displayResultStatus(result.isSuccess)),
+                tap(_ => unlock(editorDiv)),
+            ).subscribe((result => {
+                editorDiv.innerHTML = result.exceptions.reduce(
+                    (accumulator, exception) => highlightSubstring(
+                        exception,
+                        accumulator,
+                        accumulator.length - originalText.length
+                    ),
+                    originalText,
+                ).replaceAll("\n", "<br/>")
+            }))
     })
 })
+
+function displayResultStatus(isSuccess) {
+    let resultLabel = document.getElementById("result")
+    if (isSuccess) {
+        displaySuccess(resultLabel)
+    } else {
+        displayFail(resultLabel)
+    }
+}
 
 function highlightSubstring(exception, str, offset) {
     let startIndex = exception.indexRange.start + offset
@@ -35,23 +58,42 @@ function highlightSubstring(exception, str, offset) {
 
 function performSyntaxCheck(str) {
     console.log(`Checking syntax: ${str}`)
-    return {
-        isSuccess: false,
-        exceptions: [
-            {
-                type: "aaa",
-                message: "Some error",
-                indexRange: { start: 0, end: 10 },
-                additionalData: {},
-            },
-            {
-                type: "aaa",
-                message: "Some error 2",
-                indexRange: { start: 18, end: 19 },
-                additionalData: {},
-            },
-        ]
-    }
+
+    const myHeaders = new Headers();
+    myHeaders.append("Content-Type", "application/json");
+
+    const requestOptions = {
+        method: "POST",
+        headers: myHeaders,
+        body: JSON.stringify({"preconditionText": str}),
+        redirect: "follow"
+    };
+
+    return from(
+        fetch("http://localhost:8080/check-syntax", requestOptions)
+            .then((response) => response.text())
+            .then((result) => JSON.parse(result))
+    )
+
+    // return of(
+    //     {
+    //         isSuccess: false,
+    //         exceptions: [
+    //             {
+    //                 type: "aaa",
+    //                 message: "Some error",
+    //                 indexRange: { start: 0, end: 10 },
+    //                 additionalData: {},
+    //             },
+    //             {
+    //                 type: "aaa",
+    //                 message: "Some error 2",
+    //                 indexRange: { start: 18, end: 19 },
+    //                 additionalData: {},
+    //             },
+    //         ]
+    //     }
+    // ).pipe(delay(2000))
 }
 
 function displayFail(label) {
@@ -64,4 +106,17 @@ function displaySuccess(label) {
     label.textContent = "Success"
     label.classList.remove("text-red", "text-green")
     label.classList.add("text-green")
+}
+
+function lock(editor) {
+    editor.contentEditable = "false"
+    editor.insertBefore(loadingDiv, editor.firstChild)
+}
+
+function unlock(editor) {
+    editor.contentEditable = "true"
+    let loading = document.getElementById("loading")
+    if (loading) {
+        loading.remove()
+    }
 }

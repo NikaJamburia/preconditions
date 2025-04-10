@@ -7,7 +7,7 @@ import io.kotest.matchers.shouldBe
 import io.kotest.matchers.string.shouldContain
 import org.junit.Test
 
-class TemplateContextTest {
+class DeepTemplateContextTest {
 
     private val templateContext = mapOf(
         "customNumber" to 2,

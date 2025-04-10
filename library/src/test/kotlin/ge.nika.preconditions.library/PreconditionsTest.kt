@@ -1,6 +1,7 @@
 package ge.nika.preconditions.library
 
 import ge.nika.preconditions.core.api.config.CorePreconditions
+import ge.nika.preconditions.core.api.exceptions.RangeData
 import ge.nika.preconditions.core.api.exceptions.UnknownPreconditionException
 import ge.nika.preconditions.core.api.precondition.PreconditionTranslator
 import ge.nika.preconditions.library.config.PreconditionsConfig
@@ -63,7 +64,7 @@ class PreconditionsTest {
 
         result.exceptions[0].asClue {
             it.message shouldBe "Template error: DottedQuery can't contain white spaces!"
-            it.indexRange shouldBe 1..20
+            it.indexRange shouldBe RangeData(1, 20)
         }
     }
 
@@ -81,13 +82,13 @@ class PreconditionsTest {
         result.exceptions[0].asClue {
             it.type shouldBe "StatementParsingException"
             it.message shouldBe "Template error: DottedQuery can't contain white spaces!"
-            it.indexRange shouldBe 1..20
+            it.indexRange shouldBe RangeData(1, 20)
         }
 
         result.exceptions[1].asClue {
             it.type shouldBe "UnknownPreconditionException"
             it.message shouldBe "Precondition translator not present for <SOMETHING>"
-            it.indexRange shouldBe 0..0
+            it.indexRange shouldBe RangeData(start=0, end=0)
             it.additionalData["preconditionName"] shouldBe "SOMETHING"
         }
     }

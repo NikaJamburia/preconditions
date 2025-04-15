@@ -12,12 +12,14 @@ class CorePreconditionsTest {
     fun `withoutAliases method returns module with core translators without any aliases`() {
         val translators = CorePreconditions.withoutAliases().translators()
 
-        translators.size shouldBe 5
+        translators.size shouldBe 7
         translators[CorePreconditionSyntax.isPrecondition] shouldBe isTranslator
         translators[CorePreconditionSyntax.and] shouldBe andTranslator
         translators[CorePreconditionSyntax.or] shouldBe orTranslator
         translators[CorePreconditionSyntax.isGreater] shouldBe isGreaterTranslator
         translators[CorePreconditionSyntax.isLess] shouldBe isLessTranslator
+        translators[CorePreconditionSyntax.isGreaterOrEqual] shouldBe isGreaterOrEqualTranslator
+        translators[CorePreconditionSyntax.isLessOrEqual] shouldBe isLessOrEqualTranslator
     }
 
     @Test
@@ -28,12 +30,14 @@ class CorePreconditionsTest {
             or = listOf("||"),
         ).translators()
 
-        translators.size shouldBe 11
+        translators.size shouldBe 13
         translators[CorePreconditionSyntax.isPrecondition] shouldBe isTranslator
         translators[CorePreconditionSyntax.and] shouldBe andTranslator
         translators[CorePreconditionSyntax.or] shouldBe orTranslator
         translators[CorePreconditionSyntax.isGreater] shouldBe isGreaterTranslator
         translators[CorePreconditionSyntax.isLess] shouldBe isLessTranslator
+        translators[CorePreconditionSyntax.isGreaterOrEqual] shouldBe isGreaterOrEqualTranslator
+        translators[CorePreconditionSyntax.isLessOrEqual] shouldBe isLessOrEqualTranslator
 
         translators["=="] shouldBe isTranslator
         translators["is"] shouldBe isTranslator
@@ -53,12 +57,14 @@ class CorePreconditionsTest {
             or = listOf("&&"),
         ).translators()
 
-        translators.size shouldBe 7
+        translators.size shouldBe 9
         translators[CorePreconditionSyntax.isPrecondition] shouldBe isTranslator
         translators[CorePreconditionSyntax.and] shouldBe andTranslator
         translators[CorePreconditionSyntax.or] shouldBe orTranslator
         translators[CorePreconditionSyntax.isGreater] shouldBe isGreaterTranslator
         translators[CorePreconditionSyntax.isLess] shouldBe isLessTranslator
+        translators[CorePreconditionSyntax.isGreaterOrEqual] shouldBe isGreaterOrEqualTranslator
+        translators[CorePreconditionSyntax.isLessOrEqual] shouldBe isLessOrEqualTranslator
         translators["=="] shouldBe isTranslator
         translators["&&"] shouldBe andTranslator
     }

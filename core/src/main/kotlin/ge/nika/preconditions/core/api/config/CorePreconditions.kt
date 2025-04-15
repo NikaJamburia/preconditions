@@ -12,7 +12,9 @@ class CorePreconditions private constructor(
             and: List<String> = emptyList(),
             or: List<String> = emptyList(),
             isGreater: List<String> = emptyList(),
+            isGreaterOrEqual: List<String> = emptyList(),
             isLess: List<String> = emptyList(),
+            isLessOrEqual: List<String> = emptyList(),
         ): CorePreconditions{
             return CorePreconditions(
                 translators = buildMap {
@@ -22,14 +24,18 @@ class CorePreconditions private constructor(
                             CorePreconditionSyntax.and to andTranslator,
                             CorePreconditionSyntax.or to orTranslator,
                             CorePreconditionSyntax.isGreater to isGreaterTranslator,
+                            CorePreconditionSyntax.isGreaterOrEqual to isGreaterOrEqualTranslator,
                             CorePreconditionSyntax.isLess to isLessTranslator,
+                            CorePreconditionSyntax.isLessOrEqual to isLessOrEqualTranslator,
                         )
                     )
                     isP.forEach { putIfAbsent(it, isTranslator) }
                     and.forEach { putIfAbsent(it, andTranslator) }
                     or.forEach { putIfAbsent(it, orTranslator) }
                     isGreater.forEach { putIfAbsent(it, isGreaterTranslator) }
+                    isGreaterOrEqual.forEach { putIfAbsent(it, isGreaterOrEqualTranslator) }
                     isLess.forEach { putIfAbsent(it, isLessTranslator) }
+                    isLessOrEqual.forEach { putIfAbsent(it, isLessOrEqualTranslator) }
                 }
             )
         }
@@ -45,6 +51,8 @@ internal object CorePreconditionSyntax {
     val isPrecondition: String = "IS"
     val and: String = "AND"
     val or: String = "OR"
-    val isGreater: String = "GREATER_THEN"
-    val isLess: String = "LESS_THEN"
+    val isGreater: String = "IS_GREATER"
+    val isGreaterOrEqual: String = "GREATER_THEN"
+    val isLess: String = "IS_LESS"
+    val isLessOrEqual: String = "IS_LESS_OR_EQUAL"
 }

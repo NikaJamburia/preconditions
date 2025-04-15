@@ -8,13 +8,7 @@ import ge.nika.preconditions.library.config.configurePreconditions
 
 private val preconditionsConfig = configurePreconditions {
     registerModule {
-        CorePreconditions.withAliases(
-            isP = listOf("=="),
-            and = listOf("&&"),
-            or = listOf("||"),
-            isGreater = listOf(">"),
-            isLess = listOf("<")
-        )
+        CorePreconditions.withDefaultAliases()
     }
 }
 val PRECONDITIONS = Preconditions(preconditionsConfig)

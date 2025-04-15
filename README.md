@@ -10,4 +10,3 @@ Description will be here
 5) Create dates module
 6) ~~Create editor (Ideal would be to implement it intellij or vscode plugin). Simple textarea can work as poc~~
 7) Add an extension point for parameter interpretation logic defined in `PlainStatementParameter` probably by introducing functions like `{card.availableAmount} == bigDecimal('2.20')`
-8) Move module builder to core and refactor creation of `CorePrecondton` modules to look nicer

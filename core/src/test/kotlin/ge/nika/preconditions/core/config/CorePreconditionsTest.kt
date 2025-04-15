@@ -25,7 +25,7 @@ class CorePreconditionsTest {
     @Test
     fun `withAliases method returns module with core translators and given aliases`() {
         val translators = CorePreconditions.withAliases(
-            isP = listOf("==", "is", "SHOULD_BE"),
+            eq = listOf("==", "is", "SHOULD_BE"),
             and = listOf("&&", "and"),
             or = listOf("||"),
         ).translators()
@@ -52,7 +52,7 @@ class CorePreconditionsTest {
     @Test
     fun `withAliases ignores given duplicates`() {
         val translators = CorePreconditions.withAliases(
-            isP = listOf("==", "IS"),
+            eq = listOf("==", "IS"),
             and = listOf("&&"),
             or = listOf("&&"),
         ).translators()

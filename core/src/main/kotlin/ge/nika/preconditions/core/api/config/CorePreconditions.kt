@@ -8,7 +8,7 @@ class CorePreconditions private constructor(
 
     companion object {
         fun withAliases(
-            isP: List<String> = emptyList(),
+            eq: List<String> = emptyList(),
             and: List<String> = emptyList(),
             or: List<String> = emptyList(),
             isGreater: List<String> = emptyList(),
@@ -29,7 +29,7 @@ class CorePreconditions private constructor(
                             CorePreconditionSyntax.isLessOrEqual to isLessOrEqualTranslator,
                         )
                     )
-                    isP.forEach { putIfAbsent(it, isTranslator) }
+                    eq.forEach { putIfAbsent(it, isTranslator) }
                     and.forEach { putIfAbsent(it, andTranslator) }
                     or.forEach { putIfAbsent(it, orTranslator) }
                     isGreater.forEach { putIfAbsent(it, isGreaterTranslator) }
@@ -41,6 +41,16 @@ class CorePreconditions private constructor(
         }
 
         fun withoutAliases(): CorePreconditions = withAliases()
+
+        fun withDefaultAliases(): CorePreconditions = withAliases(
+            eq = listOf("=="),
+            and = listOf("&&"),
+            or = listOf("||"),
+            isGreater = listOf(">"),
+            isLess = listOf("<"),
+            isGreaterOrEqual = listOf(">=", "GTE"),
+            isLessOrEqual = listOf("<=", "LTE"),
+        )
     }
 
     override val name: String = "Core"

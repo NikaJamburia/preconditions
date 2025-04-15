@@ -12,10 +12,10 @@ private val preconditionsConfig = configurePreconditions {
             isP = listOf("=="),
             and = listOf("&&"),
             or = listOf("||"),
-            greaterThen = listOf(">"),
+            isGreater = listOf(">"),
+            isLess = listOf("<")
         )
     }
-    registerPrecondition("IS_LESS_THEN", IsLessTranslator())
 }
 val PRECONDITIONS = Preconditions(preconditionsConfig)
 

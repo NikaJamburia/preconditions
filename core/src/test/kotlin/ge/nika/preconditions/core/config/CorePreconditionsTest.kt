@@ -2,10 +2,7 @@ package ge.nika.preconditions.core.config
 
 import ge.nika.preconditions.core.api.config.CorePreconditionSyntax
 import ge.nika.preconditions.core.api.config.CorePreconditions
-import ge.nika.preconditions.core.api.precondition.andTranslator
-import ge.nika.preconditions.core.api.precondition.greaterThenTranslator
-import ge.nika.preconditions.core.api.precondition.isTranslator
-import ge.nika.preconditions.core.api.precondition.orTranslator
+import ge.nika.preconditions.core.api.precondition.*
 import io.kotest.matchers.shouldBe
 import org.junit.Test
 
@@ -15,11 +12,12 @@ class CorePreconditionsTest {
     fun `withoutAliases method returns module with core translators without any aliases`() {
         val translators = CorePreconditions.withoutAliases().translators()
 
-        translators.size shouldBe 4
+        translators.size shouldBe 5
         translators[CorePreconditionSyntax.isPrecondition] shouldBe isTranslator
         translators[CorePreconditionSyntax.and] shouldBe andTranslator
         translators[CorePreconditionSyntax.or] shouldBe orTranslator
-        translators[CorePreconditionSyntax.greaterThen] shouldBe greaterThenTranslator
+        translators[CorePreconditionSyntax.isGreater] shouldBe isGreaterTranslator
+        translators[CorePreconditionSyntax.isLess] shouldBe isLessTranslator
     }
 
     @Test
@@ -30,11 +28,12 @@ class CorePreconditionsTest {
             or = listOf("||"),
         ).translators()
 
-        translators.size shouldBe 10
+        translators.size shouldBe 11
         translators[CorePreconditionSyntax.isPrecondition] shouldBe isTranslator
         translators[CorePreconditionSyntax.and] shouldBe andTranslator
         translators[CorePreconditionSyntax.or] shouldBe orTranslator
-        translators[CorePreconditionSyntax.greaterThen] shouldBe greaterThenTranslator
+        translators[CorePreconditionSyntax.isGreater] shouldBe isGreaterTranslator
+        translators[CorePreconditionSyntax.isLess] shouldBe isLessTranslator
 
         translators["=="] shouldBe isTranslator
         translators["is"] shouldBe isTranslator
@@ -54,11 +53,12 @@ class CorePreconditionsTest {
             or = listOf("&&"),
         ).translators()
 
-        translators.size shouldBe 6
+        translators.size shouldBe 7
         translators[CorePreconditionSyntax.isPrecondition] shouldBe isTranslator
         translators[CorePreconditionSyntax.and] shouldBe andTranslator
         translators[CorePreconditionSyntax.or] shouldBe orTranslator
-        translators[CorePreconditionSyntax.greaterThen] shouldBe greaterThenTranslator
+        translators[CorePreconditionSyntax.isGreater] shouldBe isGreaterTranslator
+        translators[CorePreconditionSyntax.isLess] shouldBe isLessTranslator
         translators["=="] shouldBe isTranslator
         translators["&&"] shouldBe andTranslator
     }

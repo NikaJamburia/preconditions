@@ -11,22 +11,25 @@ class CorePreconditions private constructor(
             isP: List<String> = emptyList(),
             and: List<String> = emptyList(),
             or: List<String> = emptyList(),
-            greaterThen: List<String> = emptyList(),
+            isGreater: List<String> = emptyList(),
+            isLess: List<String> = emptyList(),
         ): CorePreconditions{
             return CorePreconditions(
-                buildMap {
+                translators = buildMap {
                     putAll(
                         mapOf(
                             CorePreconditionSyntax.isPrecondition to isTranslator,
                             CorePreconditionSyntax.and to andTranslator,
                             CorePreconditionSyntax.or to orTranslator,
-                            CorePreconditionSyntax.greaterThen to greaterThenTranslator,
+                            CorePreconditionSyntax.isGreater to isGreaterTranslator,
+                            CorePreconditionSyntax.isLess to isLessTranslator,
                         )
                     )
                     isP.forEach { putIfAbsent(it, isTranslator) }
                     and.forEach { putIfAbsent(it, andTranslator) }
                     or.forEach { putIfAbsent(it, orTranslator) }
-                    greaterThen.forEach { putIfAbsent(it, greaterThenTranslator) }
+                    isGreater.forEach { putIfAbsent(it, isGreaterTranslator) }
+                    isLess.forEach { putIfAbsent(it, isLessTranslator) }
                 }
             )
         }
@@ -42,5 +45,6 @@ internal object CorePreconditionSyntax {
     val isPrecondition: String = "IS"
     val and: String = "AND"
     val or: String = "OR"
-    val greaterThen: String = "GREATER_THEN"
+    val isGreater: String = "GREATER_THEN"
+    val isLess: String = "LESS_THEN"
 }

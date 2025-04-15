@@ -1,14 +1,13 @@
 package ge.nika.preconditions.core.api.precondition
 
+import ge.nika.preconditions.core.precondition.*
 import ge.nika.preconditions.core.precondition.And
 import ge.nika.preconditions.core.precondition.Is
 import ge.nika.preconditions.core.precondition.IsGreater
 import ge.nika.preconditions.core.precondition.Or
-import java.lang.reflect.Type
-import kotlin.reflect.KClass
 
 val andTranslator = PreconditionTranslator {
-    it.verifyParameterNumber(2)
+    it.verifyParameterCount(2)
 
     when {
         it.parameters.all { p -> p is Precondition } ->
@@ -20,7 +19,7 @@ val andTranslator = PreconditionTranslator {
 }
 
 val orTranslator = PreconditionTranslator {
-    it.verifyParameterNumber(2)
+    it.verifyParameterCount(2)
 
     when {
         it.parameters.all { p -> p is Precondition } ->
@@ -32,15 +31,16 @@ val orTranslator = PreconditionTranslator {
 }
 
 val isTranslator = PreconditionTranslator {
-    it.verifyParameterNumber(2)
+    it.verifyParameterCount(2)
     Is(
         it.parameters[0],
         it.parameters[1],
     )
 }
 
-val greaterThenTranslator = PreconditionTranslator {
-    it.verifyParameterNumber(2)
+val isGreaterTranslator = PreconditionTranslator {
+    it.verifyParameterCount(2)
+        .verifyAllParameterAreNumbers()
 
     val firstParam = it.parameters[0]
     val secondParam = it.parameters[1]
@@ -52,8 +52,26 @@ val greaterThenTranslator = PreconditionTranslator {
     IsGreater(firstParam, secondParam)
 }
 
-private fun PreconditionDescription.verifyParameterNumber(expectedNumber: Int) {
+val isLessTranslator = PreconditionTranslator {
+    it.verifyParameterCount(2)
+        .verifyAllParameterAreNumbers()
+
+    IsLess(
+        it.parameters[0] as Number,
+        it.parameters[1] as Number,
+    )
+}
+
+private fun PreconditionDescription.verifyParameterCount(expectedNumber: Int): PreconditionDescription {
     check(parameters.size == expectedNumber) {
         "$preconditionName precondition must have $expectedNumber parameters. ${parameters.size} provided"
     }
+    return this
+}
+
+private fun PreconditionDescription.verifyAllParameterAreNumbers(): PreconditionDescription {
+    check(parameters.all { p -> p is Number }) {
+        "Both parameters of $preconditionName precondition should be numbers"
+    }
+    return this
 }

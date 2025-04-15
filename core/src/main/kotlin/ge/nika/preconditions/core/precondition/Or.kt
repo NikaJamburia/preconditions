@@ -14,6 +14,8 @@ internal class Or private constructor(
         )
 
         fun ofBooleans(firstBoolean: Boolean, secondBoolean: Boolean): Or = Or({ firstBoolean }, { secondBoolean })
+
+        fun Precondition.or(other: Precondition) = ofPreconditions(this, other)
     }
 
     override fun asBoolean(): Boolean =

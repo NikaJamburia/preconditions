@@ -5,6 +5,7 @@ import ge.nika.preconditions.core.precondition.And
 import ge.nika.preconditions.core.precondition.Is
 import ge.nika.preconditions.core.precondition.IsGreater
 import ge.nika.preconditions.core.precondition.Or
+import ge.nika.preconditions.core.precondition.Or.Companion.or
 
 val andTranslator = PreconditionTranslator {
     it.verifyParameterCount(2)
@@ -32,34 +33,35 @@ val orTranslator = PreconditionTranslator {
 
 val isTranslator = PreconditionTranslator {
     it.verifyParameterCount(2)
-    Is(
-        it.parameters[0],
-        it.parameters[1],
-    )
+    Is(it.parameters[0], it.parameters[1],)
 }
 
 val isGreaterTranslator = PreconditionTranslator {
     it.verifyParameterCount(2)
         .verifyAllParameterAreNumbers()
 
-    val firstParam = it.parameters[0]
-    val secondParam = it.parameters[1]
-
-    check(firstParam is Number && secondParam is Number) {
-        "Both parameters of ${it.preconditionName} precondition should be numbers"
-    }
-
-    IsGreater(firstParam, secondParam)
+    IsGreater(it.parameters[0] as Number, it.parameters[1] as Number)
 }
 
 val isLessTranslator = PreconditionTranslator {
     it.verifyParameterCount(2)
         .verifyAllParameterAreNumbers()
 
-    IsLess(
-        it.parameters[0] as Number,
-        it.parameters[1] as Number,
-    )
+    IsLess(it.parameters[0] as Number, it.parameters[1] as Number)
+}
+
+val isGreaterOrEqualTranslator = PreconditionTranslator {
+    it.verifyParameterCount(2)
+        .verifyAllParameterAreNumbers()
+    val (first, second) = it.parameters.map { p -> p as Number }
+    IsGreater(first, second).or(Is(first, second))
+}
+
+val isLessOrEqualTranslator = PreconditionTranslator {
+    it.verifyParameterCount(2)
+        .verifyAllParameterAreNumbers()
+    val (first, second) = it.parameters.map { p -> p as Number }
+    IsLess(first, second).or(Is(first, second))
 }
 
 private fun PreconditionDescription.verifyParameterCount(expectedNumber: Int): PreconditionDescription {

@@ -6,7 +6,7 @@ import ge.nika.preconditions.core.precondition.IsLess
 import io.kotest.assertions.asClue
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.matchers.shouldBe
-import org.junit.Test
+import org.junit.jupiter.api.Test
 
 class IsLessTranslatorTest {
     

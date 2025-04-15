@@ -2,7 +2,7 @@ package ge.nika.preconditions.core.template
 
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.matchers.shouldBe
-import org.junit.Test
+import org.junit.jupiter.api.Test
 
 class AnyObjectTest {
 

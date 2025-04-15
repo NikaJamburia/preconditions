@@ -4,7 +4,7 @@ import ge.nika.preconditions.core.api.precondition.PreconditionDescription
 import ge.nika.preconditions.core.api.template.toTemplateContext
 import io.kotest.assertions.asClue
 import io.kotest.matchers.shouldBe
-import org.junit.Test
+import org.junit.jupiter.api.Test
 import kotlin.test.assertEquals
 
 class MixedStatementTest {

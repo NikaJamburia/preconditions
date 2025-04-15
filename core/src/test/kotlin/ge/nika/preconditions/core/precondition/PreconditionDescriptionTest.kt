@@ -3,7 +3,7 @@ package ge.nika.preconditions.core.precondition
 import ge.nika.preconditions.core.api.precondition.PreconditionDescription
 import io.kotest.assertions.asClue
 import io.kotest.matchers.shouldBe
-import org.junit.Test
+import org.junit.jupiter.api.Test
 
 class PreconditionDescriptionTest {
 

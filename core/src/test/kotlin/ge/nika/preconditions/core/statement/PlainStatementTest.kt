@@ -4,7 +4,7 @@ import ge.nika.preconditions.core.api.template.toTemplateContext
 import ge.nika.preconditions.core.assertParsingError
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.string.shouldStartWith
-import org.junit.Test
+import org.junit.jupiter.api.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 

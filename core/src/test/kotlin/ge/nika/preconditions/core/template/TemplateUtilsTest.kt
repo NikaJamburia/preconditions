@@ -2,7 +2,7 @@ package ge.nika.preconditions.core.template
 
 import ge.nika.preconditions.core.api.template.findTemplateVariables
 import io.kotest.matchers.shouldBe
-import org.junit.Test
+import org.junit.jupiter.api.Test
 
 class TemplateUtilsTest {
 

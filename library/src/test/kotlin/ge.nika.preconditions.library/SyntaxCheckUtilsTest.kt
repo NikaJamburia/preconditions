@@ -2,7 +2,7 @@ package ge.nika.preconditions.library
 
 import ge.nika.preconditions.library.syntax.replaceTemplateVariables
 import io.kotest.matchers.shouldBe
-import org.junit.Test
+import org.junit.jupiter.api.Test
 
 class SyntaxCheckUtilsTest {
 

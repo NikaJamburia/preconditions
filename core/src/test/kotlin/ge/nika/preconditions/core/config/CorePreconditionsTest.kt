@@ -4,7 +4,7 @@ import ge.nika.preconditions.core.api.config.CorePreconditionSyntax
 import ge.nika.preconditions.core.api.config.CorePreconditions
 import ge.nika.preconditions.core.api.precondition.*
 import io.kotest.matchers.shouldBe
-import org.junit.Test
+import org.junit.jupiter.api.Test
 
 class CorePreconditionsTest {
 

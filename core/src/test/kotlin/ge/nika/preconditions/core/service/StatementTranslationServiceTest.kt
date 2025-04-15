@@ -9,7 +9,7 @@ import ge.nika.preconditions.core.api.template.toTemplateContext
 import ge.nika.preconditions.core.assertParsingError
 import io.kotest.assertions.asClue
 import io.kotest.matchers.shouldBe
-import org.junit.Test
+import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import kotlin.test.assertTrue
 

@@ -4,7 +4,7 @@ import ge.nika.preconditions.core.api.exceptions.RangeData
 import ge.nika.preconditions.library.syntax.validateDottedQueryTemplatesInText
 import io.kotest.assertions.asClue
 import io.kotest.matchers.shouldBe
-import org.junit.Test
+import org.junit.jupiter.api.Test
 
 class ValidateDottedQueryTemplatesInTextTest {
 

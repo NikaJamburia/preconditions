@@ -5,7 +5,7 @@ import ge.nika.preconditions.core.api.template.toTemplateContext
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.string.shouldContain
-import org.junit.Test
+import org.junit.jupiter.api.Test
 
 class DeepTemplateContextTest {
 

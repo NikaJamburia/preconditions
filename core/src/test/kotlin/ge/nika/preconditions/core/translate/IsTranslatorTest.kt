@@ -5,7 +5,7 @@ import ge.nika.preconditions.core.api.precondition.isTranslator
 import ge.nika.preconditions.core.precondition.Is
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.matchers.shouldBe
-import org.junit.Test
+import org.junit.jupiter.api.Test
 
 class IsTranslatorTest {
 

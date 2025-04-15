@@ -7,7 +7,7 @@ import ge.nika.preconditions.core.precondition.IsGreater
 import ge.nika.preconditions.core.precondition.Or
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.matchers.shouldBe
-import org.junit.Test
+import org.junit.jupiter.api.Test
 
 class OrTranslatorTest {
 

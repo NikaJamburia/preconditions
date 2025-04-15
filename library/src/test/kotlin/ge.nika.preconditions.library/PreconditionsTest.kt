@@ -9,7 +9,7 @@ import ge.nika.preconditions.library.config.configurePreconditions
 import ge.nika.preconditions.library.config.customModule
 import io.kotest.assertions.asClue
 import io.kotest.matchers.shouldBe
-import org.junit.Test
+import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 
 class PreconditionsTest {

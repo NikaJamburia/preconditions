@@ -8,7 +8,7 @@ import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.matchers.shouldBe
 import org.junit.Test
 
-class IsGreaterTest {
+class IsGreaterTranslatorTest {
 
     @Test
     fun `correctly translates given description to is greater precondition`() {
@@ -56,18 +56,18 @@ class IsGreaterTest {
     }
 
     @Test
-    fun `throws exception number of given parameters is not a number`() {
+    fun `throws exception when any of given parameters is not a number`() {
         val exception = shouldThrow<IllegalStateException> {
             isGreaterTranslator.translate(
                 PreconditionDescription(
-                listOf(1L, "2"), ">")
+                listOf(1L, null), ">")
             )
         }
         exception.message shouldBe "Both parameters of > precondition should be numbers"
     }
 
     @Test
-    fun `throws exception number of given parameters is not 2`() {
+    fun `throws exception when number of given parameters is not 2`() {
         val exception = shouldThrow<IllegalStateException> {
             isGreaterTranslator.translate(PreconditionDescription(listOf(), ">"))
         }

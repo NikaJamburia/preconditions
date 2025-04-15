@@ -4,7 +4,7 @@ import ge.nika.preconditions.core.api.precondition.Precondition
 
 internal class And private constructor(
     private val firstParamToBoolean: () -> Boolean,
-    private val secondParamToBoolean: () -> Boolean
+    private val secondParamToBoolean: () -> Boolean,
 ) : Precondition {
 
     companion object {

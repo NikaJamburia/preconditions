@@ -2,12 +2,20 @@ package ge.nika.preconditions.core.precondition
 
 import ge.nika.preconditions.core.api.precondition.Precondition
 
-internal class Or(
-    private val firstPrecondition: Precondition,
-    private val secondPrecondition: Precondition,
+internal class Or private constructor(
+    private val firstParamToBoolean: () -> Boolean,
+    private val secondParamToBoolean: () -> Boolean,
 ): Precondition {
 
-    override fun asBoolean(): Boolean {
-        return firstPrecondition.asBoolean() || secondPrecondition.asBoolean()
+    companion object {
+        fun ofPreconditions(firstPrecondition: Precondition, secondPrecondition: Precondition): Or = Or(
+            firstPrecondition::asBoolean,
+            secondPrecondition::asBoolean
+        )
+
+        fun ofBooleans(firstBoolean: Boolean, secondBoolean: Boolean): Or = Or({ firstBoolean }, { secondBoolean })
     }
+
+    override fun asBoolean(): Boolean =
+        firstParamToBoolean() || secondParamToBoolean()
 }

@@ -15,7 +15,7 @@ class OrTest {
         val truePrecondition = mockk<Precondition> { every { asBoolean() } returns true }
         val falsePrecondition = mockk<Precondition> { every { asBoolean() } returns false }
 
-        assertTrue(Or(truePrecondition, falsePrecondition).asBoolean())
+        assertTrue(Or.ofPreconditions(truePrecondition, falsePrecondition).asBoolean())
     }
 
     @Test
@@ -23,7 +23,7 @@ class OrTest {
         val precondition1 = mockk<Precondition> { every { asBoolean() } returns true }
         val precondition2  = mockk<Precondition> { every { asBoolean() } returns true }
 
-        assertTrue(Or(precondition1, precondition2).asBoolean())
+        assertTrue(Or.ofPreconditions(precondition1, precondition2).asBoolean())
     }
 
     @Test
@@ -31,6 +31,6 @@ class OrTest {
         val precondition1 = mockk<Precondition> { every { asBoolean() } returns false }
         val precondition2  = mockk<Precondition> { every { asBoolean() } returns false }
 
-        assertFalse(Or(precondition1, precondition2).asBoolean())
+        assertFalse(Or.ofPreconditions(precondition1, precondition2).asBoolean())
     }
 }

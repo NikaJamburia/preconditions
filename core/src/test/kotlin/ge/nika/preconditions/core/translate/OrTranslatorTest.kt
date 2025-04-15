@@ -12,7 +12,7 @@ import org.junit.Test
 class OrTranslatorTest {
 
     @Test
-    fun `translates given description to or precondition`() {
+    fun `translates given description with precondition parameters to OR precondition`() {
         val description = PreconditionDescription(
             parameters = listOf(Is(1, 1), IsGreater(1, 2)),
             preconditionName = "OR"
@@ -25,13 +25,16 @@ class OrTranslatorTest {
     }
 
     @Test
-    fun `throws exception if any of the parameters is not a precondition`() {
+    fun `translates given description with boolean parameters to OR precondition`() {
         val description = PreconditionDescription(
-            parameters = listOf(1, Is(1, 2)),
+            parameters = listOf(true, false),
             preconditionName = "OR"
         )
-        val exception = shouldThrow<IllegalStateException> { orTranslator.translate(description) }
-        exception.message shouldBe "Both parameters of OR precondition should be preconditions"
+
+        val precondition = orTranslator.translate(description)
+
+        (precondition is Or) shouldBe true
+        precondition.asBoolean() shouldBe true
     }
 
     @Test
@@ -40,5 +43,15 @@ class OrTranslatorTest {
             orTranslator.translate(PreconditionDescription(listOf(Is(1, 2)),"OR"))
         }
         exception.message shouldBe "OR precondition must have 2 parameters. 1 provided"
+    }
+
+    @Test
+    fun `throws exception if all of the parameters is not a precondition nor boolean`() {
+        val description = PreconditionDescription(
+            parameters = listOf(1, Is(1, 2)),
+            preconditionName = "OR"
+        )
+        val exception = shouldThrow<IllegalStateException> { orTranslator.translate(description) }
+        exception.message shouldBe "Type of both parameters of OR precondition must be either precondition or boolean"
     }
 }
